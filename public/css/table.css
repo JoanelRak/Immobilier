@@ -1,0 +1,58 @@
+/* Table Styling */
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+/* Table Header Styling */
+.data-table thead {
+    background-color: #007bff;
+    color: #ffffff;
+}
+
+.table-header {
+    padding: 10px;
+    text-align: left;
+    font-weight: bold;
+    border-bottom: 2px solid #ddd;
+}
+
+/* Table Body and Cell Styling */
+.data-table tbody tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+.table-cell {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+/* Link Styling */
+.table-cell a {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.table-cell a:hover {
+    text-decoration: underline;
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+    .content-section {
+        padding: 10px;
+    }
+
+    .table-cell {
+        font-size: 14px;
+        padding: 8px;
+    }
+
+    .table-header {
+        font-size: 14px;
+        padding: 8px;
+    }
+}
