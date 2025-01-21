@@ -17,7 +17,7 @@ class AdminGet
     public function getAllUsers()
     {
         try {
-            return $this->DBH->fetchQuery("SELECT * FROM noel_users");
+            return $this->DBH->fetchQuery("SELECT * FROM Immobilier_client");
         } catch (\Exception $e) {
             throw new \RuntimeException("Error fetching all users: " . $e->getMessage());
         }
@@ -27,7 +27,7 @@ class AdminGet
     public function getUser($nom, $password)
     {
         try {
-            $query = "SELECT * FROM noel_users WHERE nom = :nom AND mdp = :mdp";
+            $query = "SELECT * FROM Immobilier_client WHERE nom = :nom AND mdp = :mdp";
             $params = [':nom' => $nom, ':mdp' => $password];
             $result = $this->DBH->fetchQueryWithParams($query, $params);
             return $result ?: false;
@@ -36,71 +36,36 @@ class AdminGet
         }
     }
 
-    // Get all depots
-    public function getAllDepots()
-    {
+    public function getAllHabitations ( string $search = null) {
         try {
-            return $this->DBH->fetchQuery("SELECT * FROM noel_depot");
-        } catch (\Exception $e) {
-            throw new \RuntimeException("Error fetching depots: " . $e->getMessage());
+            $query = "SELECT * FROM Immobilier_habitation ";
+            $params = [];
+            if ($search != null) {
+                $query .= " WHERE designation like :search";
+                $params [] = [':search' => $search];
+            }
+            return $this->DBH->fetchQueryWithParams($query, $params) ?: false;
+        }catch (\Exception $e) {
+            throw new \RuntimeException("Error fetching : " . $e->getMessage(). $query);
         }
     }
-
-    // Get depots by user ID
-    public function getAllDepotsById($id)
-    {
+    public function getHabitationById (int $id) {
         try {
-            $query = "SELECT * FROM noel_depot WHERE id_user = :id_user";
-            $params = [':id_user' => $id];
-            return $this->DBH->fetchQueryWithParams($query, $params);
-        } catch (\Exception $e) {
-            throw new \RuntimeException("Error fetching depots for user ID $id: " . $e->getMessage());
-        }
-    }
-
-    // Get all categories
-    public function getAllCategories()
-    {
-        try {
-            return $this->DBH->fetchQuery("SELECT * FROM noel_categorie_cadeau");
-        } catch (\Exception $e) {
-            throw new \RuntimeException("Error fetching categories: " . $e->getMessage());
-        }
-    }
-
-    // Get all gifts
-    public function getAllCadeaux()
-    {
-        try {
-            return $this->DBH->fetchQuery("SELECT * FROM noel_cadeau");
-        } catch (\Exception $e) {
-            throw new \RuntimeException("Error fetching gifts: " . $e->getMessage());
-        }
-    }
-
-    // Get gift by ID
-    public function getCadeauById($id)
-    {
-        try {
-            $query = "SELECT * FROM noel_cadeau WHERE id = :id";
+            $query = "SELECT * FROM Immobilier_habitation WHERE id = :id";
             $params = [':id' => $id];
-            $result = $this->DBH->fetchQueryWithParams($query, $params);
-            return $result ?: false;
-        } catch (\Exception $e) {
-            throw new \RuntimeException("Error fetching gift with ID $id: " . $e->getMessage());
+            return $this->DBH->fetchQueryWithParams($query, $params) ?: false;
+        }catch (\Exception $e) {
+            throw new \RuntimeException("Error fetching : " . $e->getMessage(). $query);
         }
     }
-
-    public function getAllCadeauxByCategorie($categorie)
-    {
-        return $this->DBH->fetchQuery("SELECT * FROM noel_cadeau WHERE id_categorie = $categorie");
+    public function getAllReservations ($idUser) {
+        try {
+            $query = "SELECT * FROM Immobilier_reservation WHERE id_client = :id";
+            $params = [':id' => $idUser];
+            return $this->DBH->fetchQueryWithParams($query, $params) ?: false;
+        }catch (\Exception $e) {
+            throw new \RuntimeException("Error fetching : " . $e->getMessage(). $query);
+        }
     }
-
-    public function getAllCadeauxByEtoile($etoile)
-    {
-        return $this->DBH->fetchQuery("SELECT * FROM noel_cadeau WHERE etoile = $etoile");
-    }
-
-
 
 }

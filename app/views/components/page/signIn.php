@@ -1,24 +1,41 @@
 <?php
 ?>
 <main>
-    <section class="content-section">
-        <form action="/submit-signIn" method="post" class="submit-form" >
-            <label for="name">
-                Name :
-            </label>
-            <input type="text" name="name" id="name" class="name-input" />
-
-            <label for="password">
-                Mot de passe :
-            </label>
-            <input type="password" name="password" id="password" class="password-input" />
-
-            <label for="age">
-                Age :
-            </label>
-            <input type="number" name="age" id="age" class="age-input">
-
-            <input type="submit" value="S'inscrir">
-        </form>
-    </section>
+    <div class="auth-container">
+        <div class="auth-box">
+            <div class="auth-header">
+                <h2><i class="fas fa-user-plus"></i> Inscription</h2>
+            </div>
+            <?php if(isset($error)): ?>
+                <div class="alert alert-error">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <?php echo $error; ?>
+                </div>
+            <?php endif; ?>
+            <form method="POST" class="auth-form">
+                <div class="form-group">
+                    <label for="nom"><i class="fas fa-user"></i> Nom d'utilisateur</label>
+                    <input type="text" id="nom" name="nom" required>
+                </div>
+                <div class="form-group">
+                    <label for="email"><i class="fas fa-envelope"></i> Email</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="mdp"><i class="fas fa-lock"></i> Mot de passe</label>
+                    <input type="password" id="mdp" name="mdp" required>
+                </div>
+                <div class="form-group">
+                    <label for="numTel"><i class="fas fa-phone"></i> Téléphone</label>
+                    <input type="tel" id="numTel" name="numTel" required>
+                </div>
+                <button type="submit" class="btn-submit">
+                    <i class="fas fa-user-plus"></i> S'inscrire
+                </button>
+            </form>
+            <div class="auth-footer">
+                <p>Déjà un compte ? <a href="login.php">Se connecter</a></p>
+            </div>
+        </div>
+    </div>
 </main>

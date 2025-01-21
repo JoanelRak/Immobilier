@@ -107,3 +107,12 @@ INSERT INTO noel_cadeau (id_categorie, description_cadeau, prix, image, etoile) 
 (2, 'T-shirt super-héros', 15.99, 'image_garcon.png', 5),
 (3, 'Poster éducatif', 9.99, 'image_neutre.png', 4),
 (1, 'Kit de création de bijoux', 22.99, 'image_fille.png', 5);
+
+
+CREATE TABLE noel_cadeau_user (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  id_cadeau INT NOT null ,
+  id_user INT,
+  FOREIGN KEY (id_cadeau) REFERENCES noel_cadeau(id),
+  FOREIGN KEY (id_user) REFERENCES noel_users(id)
+);

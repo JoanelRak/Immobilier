@@ -1,4 +1,5 @@
 <?php
+
 namespace app\controllers;
 
 use app\models\admin\AdminGet;
@@ -15,9 +16,12 @@ class RoutesController
     private AdminGet $adminGet;
     private SpecificQuery $specificQuery;
     private Connection $connection;
+    private string $BASE_URL;
 
     public function __construct(Engine $engine)
     {
+        $this->BASE_URL = Flight::has("flight.base_url") ? Flight::get("flight.base_url") : '/';
+
         try {
             $this->connection = Flight::connection();
             $this->adminInsert = new AdminInsert($this->connection);
@@ -25,193 +29,71 @@ class RoutesController
             $this->specificQuery = new SpecificQuery($this->connection);
         } catch (\Exception $e) {
             ErrorHandler::setError("Connection error: " . $e->getMessage());
-            Flight::redirect('/error');
+            $this->redirectTo('/error');
+        }
+    }
+
+    private function redirectTo($path)
+    {
+        Flight::redirect($this->BASE_URL . $path);
+    }
+
+    private function handleErrorAndRedirect($errorMessage, $redirectPath)
+    {
+        ErrorHandler::setError($errorMessage);
+        $this->redirectTo($redirectPath);
+    }
+
+    private function renderView($main, $additionalData = [])
+    {
+        $defaultData = [
+            'header' => 'header',
+            'footer' => 'footer',
+            'message' => ErrorHandler::getError()
+        ];
+        $data = array_merge($defaultData, $additionalData);
+        $data['main'] = $main;
+
+        Flight::render("index", $data);
+    }
+
+    private function checkIfLoggedIn()
+    {
+        if (!isset($_SESSION["user"])) {
+            $this->handleErrorAndRedirect("You need to log in to access this page", '/login');
         }
     }
 
     public function error()
     {
-        $data = [
-            'header' => 'header',
-            'main' => 'error',
-            'footer' => 'footer',
-            'message' => ErrorHandler::getError()
-        ];
-        Flight::render("index", $data);
+        $this->renderView('error');
     }
 
     public function admin()
     {
-        if (!isset($_SESSION['depots'])) {
-            ErrorHandler::setError("No deposits available");
-            Flight::redirect('/');
-            return;
-        }
-
         $data = [
-            'header' => 'header',
-            'main' => 'admin',
-            'footer' => 'footer',
-            'all_depots' => $_SESSION['depots'],
-            'message' => ErrorHandler::getError()
+            'currentPage' => 'admin',
+            'all_depots' => $_SESSION['depots'] ?? [],
+            'commission' => $_SESSION['commission'] ?? 0
         ];
-        Flight::render("index", $data);
+        $this->renderView('admin', $data);
     }
 
     public function index()
     {
-        $data = [
-            'header' => 'header',
-            'main' => 'home_main',
-            'footer' => 'footer',
-            'message' => ErrorHandler::getError()
-        ];
-        Flight::render("index", $data);
-    }
+        $habitations = isset($_GET["search"])
+            ? $this->adminGet->getAllHabitations($_GET["search"])
+            : $this->adminGet->getAllHabitations();
 
-    public function depot()
-    {
-        $data = [
-            'header' => 'header',
-            'main' => 'depot',
-            'footer' => 'footer',
-            'message' => ErrorHandler::getError()
-        ];
-        Flight::render("index", $data);
-    }
-
-    public function submitDepot()
-    {
-        if (!isset($_SESSION['user'])) {
-            ErrorHandler::setError("Please login first");
-            Flight::redirect('/login');
-            return;
-        }
-
-        $montantDepot = filter_input(INPUT_POST, 'montant', FILTER_VALIDATE_FLOAT);
-        if ($montantDepot === false || $montantDepot === null) {
-            ErrorHandler::setError("Invalid deposit amount");
-            Flight::redirect('/depot');
-            return;
-        }
-
-        $user = $_SESSION['user'];
-        $_SESSION['depots'][] = [
-            'id_user' => $user['id_user'],
-            'montant' => $montantDepot
-        ];
-        Flight::redirect('/');
-    }
-
-    public function insertDepot($index)
-    {
-        try {
-            if (!isset($_SESSION['depots'][$index])) {
-                ErrorHandler::setError("Deposit not found");
-                Flight::redirect('/');
-                return;
-            }
-
-            $depot = $_SESSION['depots'][$index];
-            $result = $this->adminInsert->insertDepot($depot);
-
-            if ($result === null) {
-                ErrorHandler::setError("Failed to save deposit");
-                Flight::redirect('/');
-                return;
-            }
-
-            unset($_SESSION['depots'][$index]);
-            Flight::redirect("/");
-        } catch (\Exception $e) {
-            ErrorHandler::setError("Error processing deposit: " . $e->getMessage());
-            Flight::redirect('/');
-        }
-    }
-
-    public function form()
-    {
-        $data = [
-            'header' => 'header',
-            'main' => 'form',
-            'footer' => 'footer',
-            'message' => ErrorHandler::getError()
-        ];
-        Flight::render("index", $data);
-    }
-
-    public function submitForm() {
-        try {
-            $number_men = filter_input(INPUT_POST, 'men', FILTER_VALIDATE_INT);
-            $number_women = filter_input(INPUT_POST, 'women', FILTER_VALIDATE_INT);
-
-            if ($number_men === false || $number_women === false) {
-                ErrorHandler::setError("Please enter valid numbers");
-                Flight::redirect('/form');
-                return;
-            }
-
-            // Store in session
-            $_SESSION['cadeaux'] = $this->specificQuery->getRandomCadeaux($number_men, $number_women);
-
-            // Pass session data to view
-            $data = [
-                'header' => 'header',
-                'main' => 'cadeau',
-                'footer' => 'footer',
-                'message' => ErrorHandler::getError(),
-                'cadeaux' => $_SESSION['cadeaux'] // Add this line to pass the data
-            ];
-            Flight::render("index", $data);
-        } catch (\Exception $e) {
-            ErrorHandler::setError("Error getting gifts: " . $e->getMessage());
-            Flight::redirect('/form');
-        }
-    }
-    public function getRandomGiftByCategory($category) {
-        try {
-            $gift = $this->specificQuery->getRandomCadeauxByCategorie($category);
-            Flight::json([
-                'success' => true,
-                'gift' => $gift
-            ]);
-        } catch (\Exception $e) {
-            Flight::json([
-                'success' => false,
-                'error' => $e->getMessage()
-            ], 500);
-        }
-    }
-    public function validateGiftsApi() {
-        $data = json_decode(Flight::request()->getBody(), true);
-        $userId = $_SESSION['user_id'] ?? null;
-        $selectedGifts = $data['gifts'] ?? [];
-
-        if (!$userId || empty($selectedGifts)) {
-            Flight::json([
-                'success' => false,
-                'error' => 'Invalid request data'
-            ], 400);
-            return;
-        }
-
-        $isValid = $this->specificQuery->validateGifts($userId, $selectedGifts);
-
-        Flight::json([
-            'success' => true,
-            'isValid' => $isValid
+        $this->renderView('home_main', [
+            'currentPage' => 'home',
+            'habitations' => $habitations
         ]);
     }
 
     public function login()
     {
-        $data = [
-            'header' => 'header',
-            'main' => 'login',
-            'footer' => 'footer',
-            'message' => ErrorHandler::getError()
-        ];
-        Flight::render("index", $data);
+        $this->renderView('login', ['currentPage' => 'login']);
     }
 
     public function submitLogin()
@@ -221,15 +103,13 @@ class RoutesController
             $password = trim($_POST["password"] ?? '');
 
             if (empty($name) || empty($password)) {
-                ErrorHandler::setError("Please enter both username and password");
-                Flight::redirect('/login');
+                $this->handleErrorAndRedirect("Please enter both username and password", '/login');
                 return;
             }
 
             $userGet = $this->adminGet->getUser($name, $password);
             if (!is_array($userGet)) {
-                ErrorHandler::setError("Invalid username or password");
-                Flight::redirect('/login');
+                $this->handleErrorAndRedirect("Invalid username or password", '/login');
                 return;
             }
 
@@ -240,22 +120,15 @@ class RoutesController
                 'age' => $userGet[0]["age"],
             ];
 
-            Flight::redirect("/");
+            $this->redirectTo('/');
         } catch (\Exception $e) {
-            ErrorHandler::setError("Login error: " . $e->getMessage());
-            Flight::redirect('/login');
+            $this->handleErrorAndRedirect("Login error: " . $e->getMessage(), '/login');
         }
     }
 
     public function signIn()
     {
-        $data = [
-            'header' => 'header',
-            'main' => 'signIn',
-            'footer' => 'footer',
-            'message' => ErrorHandler::getError()
-        ];
-        Flight::render("index", $data);
+        $this->renderView('signIn', ['currentPage' => 'register']);
     }
 
     public function submitSignIn()
@@ -266,8 +139,7 @@ class RoutesController
             $age = filter_input(INPUT_POST, 'age', FILTER_VALIDATE_INT);
 
             if (empty($name) || empty($password) || !$age) {
-                ErrorHandler::setError("All fields are required");
-                Flight::redirect('/signIn');
+                $this->handleErrorAndRedirect("All fields are required", '/signIn');
                 return;
             }
 
@@ -279,15 +151,13 @@ class RoutesController
 
             $result = $this->adminInsert->insertUser($user);
             if ($result === -1) {
-                ErrorHandler::setError("Failed to create account");
-                Flight::redirect('/signIn');
+                $this->handleErrorAndRedirect("Failed to create account", '/signIn');
                 return;
             }
 
             $userGet = $this->adminGet->getUser($user[":nom"], $user[":mdp"]);
             if (!is_array($userGet)) {
-                ErrorHandler::setError("Error accessing new account");
-                Flight::redirect('/signIn');
+                $this->handleErrorAndRedirect("Error accessing new account", '/signIn');
                 return;
             }
 
@@ -298,10 +168,9 @@ class RoutesController
                 'age' => $userGet[0]["age"],
             ];
 
-            Flight::redirect("/");
+            $this->redirectTo('/');
         } catch (\Exception $e) {
-            ErrorHandler::setError("Registration error: " . $e->getMessage());
-            Flight::redirect('/signIn');
+            $this->handleErrorAndRedirect("Registration error: " . $e->getMessage(), '/signIn');
         }
     }
 
@@ -311,10 +180,27 @@ class RoutesController
             if (session_status() === PHP_SESSION_ACTIVE) {
                 session_unset();
             }
-            Flight::redirect("/");
+            $this->redirectTo('/');
         } catch (\Exception $e) {
-            ErrorHandler::setError("Logout error: " . $e->getMessage());
-            Flight::redirect('/');
+            $this->handleErrorAndRedirect("Logout error: " . $e->getMessage(), '/');
         }
+    }
+
+    public function property($idProperty)
+    {
+        $property = $this->adminGet->getHabitationById($idProperty);
+        $this->renderView('propriete', [
+            'habitation' => $property
+        ]);
+    }
+
+    public function reservations()
+    {
+        $this->checkIfLoggedIn();
+        $reservations = $this->adminGet->getAllReservations();
+        $this->renderView('reservations', [
+            'currentPage' => 'reservations',
+            'reservations' => $reservations
+        ]);
     }
 }

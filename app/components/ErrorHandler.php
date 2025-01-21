@@ -3,9 +3,9 @@
 namespace app\components;
 
 class ErrorHandler {
+    static $error;
     public static function setError($message) {
         $_SESSION['error_message'] = $message;
-        error_log($message);
     }
 
     public static function getError() {
