@@ -12,7 +12,7 @@
                     <?php echo $error; ?>
                 </div>
             <?php endif; ?>
-            <form method="POST" class="auth-form">
+            <form method="POST" class="auth-form" action="submit-signIn">
                 <div class="form-group">
                     <label for="nom"><i class="fas fa-user"></i> Nom d'utilisateur</label>
                     <input type="text" id="nom" name="nom" required>
@@ -34,8 +34,20 @@
                 </button>
             </form>
             <div class="auth-footer">
-                <p>Déjà un compte ? <a href="login.php">Se connecter</a></p>
+                <p>Déjà un compte ? <a href="login">Se connecter</a></p>
             </div>
+            <?php
+                if (isset($_SESSION["error_message"])) { ?>
+                    <div class="alert-error">
+                        <p><?php echo ErrorHandler::getError()?></p>
+                    </div>
+                <?php }
+
+            ?>
+
+
+
+
         </div>
     </div>
 </main>

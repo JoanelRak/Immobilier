@@ -35,7 +35,7 @@
                 </form>
             </div>
             <div class="nav-links">
-                <a href="/" class="<?php echo $currentPage === 'home' ? 'active' : ''; ?>">
+                <a href="" class="<?php echo $currentPage === 'home' ? 'active' : ''; ?>">
                     <i class="fas fa-home"></i> Accueil
                 </a>
                 <?php if(isset($_SESSION['user'])): ?>
@@ -56,7 +56,7 @@
                     <a href="login" class="<?php echo $currentPage === 'login' ? 'active' : ''; ?>">
                         <i class="fas fa-sign-in-alt"></i> Connexion
                     </a>
-                    <a href="signIn" class="btn-register <?php echo $currentPage === 'register' ? 'active' : ''; ?>">
+                    <a href="signIn" class="<?php echo $currentPage === 'register' ? 'active' : ''; ?>">
                         <i class="fas fa-user-plus"></i> Inscription
                     </a>
                 <?php endif; ?>

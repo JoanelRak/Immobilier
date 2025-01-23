@@ -35,8 +35,13 @@ class RoutesController
 
     private function redirectTo($path)
     {
-        Flight::redirect($this->BASE_URL . $path);
+        // Normalize path by removing leading and trailing slashes
+        $path = trim($path, '/');
+
+        // Redirect using Flight's method
+        Flight::redirect($path);
     }
+
 
     private function handleErrorAndRedirect($errorMessage, $redirectPath)
     {
@@ -103,13 +108,13 @@ class RoutesController
             $password = trim($_POST["password"] ?? '');
 
             if (empty($name) || empty($password)) {
-                $this->handleErrorAndRedirect("Please enter both username and password", '/login');
+                $this->handleErrorAndRedirect("Please enter both username and password", 'login');
                 return;
             }
 
             $userGet = $this->adminGet->getUser($name, $password);
             if (!is_array($userGet)) {
-                $this->handleErrorAndRedirect("Invalid username or password", '/login');
+                $this->handleErrorAndRedirect("Invalid username or password", 'login');
                 return;
             }
 
@@ -120,9 +125,9 @@ class RoutesController
                 'age' => $userGet[0]["age"],
             ];
 
-            $this->redirectTo('/');
+            $this->redirectTo('');
         } catch (\Exception $e) {
-            $this->handleErrorAndRedirect("Login error: " . $e->getMessage(), '/login');
+            $this->handleErrorAndRedirect("Login error: " . $e->getMessage(), 'login');
         }
     }
 
@@ -139,7 +144,7 @@ class RoutesController
             $age = filter_input(INPUT_POST, 'age', FILTER_VALIDATE_INT);
 
             if (empty($name) || empty($password) || !$age) {
-                $this->handleErrorAndRedirect("All fields are required", '/signIn');
+                $this->handleErrorAndRedirect("All fields are required", 'signIn');
                 return;
             }
 
@@ -151,13 +156,13 @@ class RoutesController
 
             $result = $this->adminInsert->insertUser($user);
             if ($result === -1) {
-                $this->handleErrorAndRedirect("Failed to create account", '/signIn');
+                $this->handleErrorAndRedirect("Failed to create account", 'signIn');
                 return;
             }
 
             $userGet = $this->adminGet->getUser($user[":nom"], $user[":mdp"]);
             if (!is_array($userGet)) {
-                $this->handleErrorAndRedirect("Error accessing new account", '/signIn');
+                $this->handleErrorAndRedirect("Error accessing new account", 'signIn');
                 return;
             }
 
@@ -168,9 +173,9 @@ class RoutesController
                 'age' => $userGet[0]["age"],
             ];
 
-            $this->redirectTo('/');
+            $this->redirectTo('');
         } catch (\Exception $e) {
-            $this->handleErrorAndRedirect("Registration error: " . $e->getMessage(), '/signIn');
+            $this->handleErrorAndRedirect("Registration error: " . $e->getMessage(), 'signIn');
         }
     }
 

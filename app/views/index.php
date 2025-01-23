@@ -1,8 +1,8 @@
 <?php
 
 include "components/functions/incs.php";
-$base_url = Flight::get('flight.base_url');
-
+$base_url = Flight::get("flight.base_url");
+use app\components\ErrorHandler;
 ?>
 
 <!DOCTYPE html>
@@ -11,7 +11,7 @@ $base_url = Flight::get('flight.base_url');
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Immobilier</title>
-    <base href="<?= $base_url ?>">
+    <base href="<?= rtrim(Flight::get("flight.base_url"), '/') . '/'; ?>">
     <link rel="stylesheet" href="css/main-css.css">
     <link rel="stylesheet" href="css/auth-css.css">
     <link rel="stylesheet" href="css/selected-css.css">
