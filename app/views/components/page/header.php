@@ -35,7 +35,7 @@
                 </form>
             </div>
             <div class="nav-links">
-                <a href="index.php" class="<?php echo $currentPage === 'home' ? 'active' : ''; ?>">
+                <a href="/" class="<?php echo $currentPage === 'home' ? 'active' : ''; ?>">
                     <i class="fas fa-home"></i> Accueil
                 </a>
                 <?php if(isset($_SESSION['user'])): ?>

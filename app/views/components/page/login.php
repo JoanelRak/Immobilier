@@ -12,7 +12,7 @@
                     <?php echo $error; ?>
                 </div>
             <?php endif; ?>
-            <form method="POST" class="auth-form" action="login">
+            <form method="POST" class="auth-form" action="submit-login">
                 <div class="form-group">
                     <label for="nom"><i class="fas fa-user"></i> Nom d'utilisateur</label>
                     <input type="text" id="nom" name="nom" required>

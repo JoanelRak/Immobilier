@@ -36,19 +36,37 @@ class AdminGet
         }
     }
 
-    public function getAllHabitations ( string $search = null) {
+    public function getAllHabitations(string $search = null)
+    {
         try {
-            $query = "SELECT * FROM Immobilier_habitation ";
+            // Requête pour sélectionner les habitations avec une image aléatoire et le nom du type
+            $query = "SELECT h.*, 
+                            t.designation AS type_name,
+                            (SELECT img.img_url 
+                            FROM Immobilier_img img 
+                            WHERE img.id_habitation = h.id 
+                            ORDER BY RAND() 
+                            LIMIT 1) AS img_url
+                    FROM Immobilier_habitation h
+                    JOIN Immobilier_type t ON h.id_type = t.id";
+
             $params = [];
+
+            // Ajouter une condition pour la recherche si nécessaire
             if ($search != null) {
-                $query .= " WHERE designation like :search";
-                $params [] = [':search' => $search];
+                $query .= " WHERE h.designation LIKE :search";
+                $params[] = [':search' => '%' . $search . '%'];
             }
+
+            // Exécuter la requête avec les paramètres
             return $this->DBH->fetchQueryWithParams($query, $params) ?: false;
-        }catch (\Exception $e) {
-            throw new \RuntimeException("Error fetching : " . $e->getMessage(). $query);
+        } catch (\Exception $e) {
+            // Gérer les erreurs
+            throw new \RuntimeException("Error fetching: " . $e->getMessage() . $query);
         }
     }
+
+
     public function getHabitationById (int $id) {
         try {
             $query = "SELECT * FROM Immobilier_habitation WHERE id = :id";
@@ -58,6 +76,7 @@ class AdminGet
             throw new \RuntimeException("Error fetching : " . $e->getMessage(). $query);
         }
     }
+    
     public function getAllReservations ($idUser) {
         try {
             $query = "SELECT * FROM Immobilier_reservation WHERE id_client = :id";

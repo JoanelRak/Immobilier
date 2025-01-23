@@ -61,7 +61,7 @@ INSERT INTO Immobilier_habitation (id_type, nombre_chambre, loyer, quartier, des
 -- Insérer des images d'habitations
 INSERT INTO Immobilier_img (id_habitation, img_url) VALUES
 (1, 'images/appartement.jpg'),
-(2, 'mages/maison.jpg'),
+(2, 'images/maison.jpg'),
 (3, 'images/studio.jpg');
 
 -- Insérer des réservations
