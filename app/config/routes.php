@@ -16,6 +16,8 @@ if (session_status() == PHP_SESSION_NONE) {
 
 // Existing routes
 $router->get('/', [RoutesController::class, 'index']);
+
+$router->get('/home',  [RoutesController::class, 'index'] );
 $router->get("/admin", [RoutesController::class, 'admin']);
 $router->get("/login", [RoutesController::class, 'login']);
 $router->post("/submit-login", [RoutesController::class, 'submitLogin']);

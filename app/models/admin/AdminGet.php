@@ -50,16 +50,14 @@ class AdminGet
                     FROM Immobilier_habitation h
                     JOIN Immobilier_type t ON h.id_type = t.id";
 
-            $params = [];
 
             // Ajouter une condition pour la recherche si nécessaire
             if ($search != null) {
-                $query .= " WHERE h.designation LIKE :search";
-                $params[] = [':search' => '%' . $search . '%'];
+                $query .= " WHERE h.designation LIKE '%$search%'";
             }
 
             // Exécuter la requête avec les paramètres
-            return $this->DBH->fetchQueryWithParams($query, $params) ?: false;
+            return $this->DBH->fetchQueryWithParams($query, array()) ?: false;
         } catch (\Exception $e) {
             // Gérer les erreurs
             throw new \RuntimeException("Error fetching: " . $e->getMessage() . $query);

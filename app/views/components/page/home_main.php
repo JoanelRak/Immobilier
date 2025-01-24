@@ -3,11 +3,13 @@
         <div class="hero-content container">
             <h1>Trouvez votre logement idéal</h1>
             <p>Des milliers de biens disponibles partout en France</p>
-            <form action="" method="GET" class="hero-search">
+            <form action="home" method="GET" class="hero-search">
                 <div class="search-group">
                     <i class="fas fa-search"></i>
-                    <input type="text" name="search" placeholder="Où voulez-vous habiter ?"
-                           value="<?php echo htmlspecialchars($search ?? ''); ?> " required>
+                    <label>
+                        <input type="text" name="search" placeholder="Où voulez-vous habiter ?"
+                               value="<?php echo htmlspecialchars($search ?? ''); ?> " required>
+                    </label>
                 </div>
                 <button type="submit">Rechercher</button>
             </form>

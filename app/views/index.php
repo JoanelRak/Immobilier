@@ -16,6 +16,10 @@ $base_url = Flight::get("flight.base_url");
     <link rel="stylesheet" href="css/auth-css.css">
     <link rel="stylesheet" href="css/selected-css.css">
     <link rel="stylesheet" href="css/admin-css.css">
+    <link rel="stylesheet" href="css/footer-css.css">
+    <link rel="stylesheet" href="css/header-css.css">
+
+
 
 </head>
 

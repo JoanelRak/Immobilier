@@ -78,9 +78,7 @@ class RoutesController
     public function admin()
     {
         $data = [
-            'currentPage' => 'admin',
-            'all_depots' => $_SESSION['depots'] ?? [],
-            'commission' => $_SESSION['commission'] ?? 0
+            'currentPage' => 'admin'
         ];
         $this->renderView('admin', $data);
     }

@@ -29,8 +29,14 @@ use app\components\ErrorHandler;
     <!-- Property Gallery -->
     <div class="property-gallery container">
         <div class="main-image">
-            <img src="<?php echo htmlspecialchars($habitation['img_url'][0]["img_url"]); ?>"
-                 alt="<?php echo htmlspecialchars($habitation['designation']); ?>">
+            <?php
+                foreach ($habitation['img_url'] as $image) { ?>
+                    <img src="<?php echo htmlspecialchars($image["img_url"]); ?>"
+                         alt="<?php echo htmlspecialchars($habitation['designation']); ?>">
+               <?php }
+
+            ?>
+
         </div>
     </div>
 

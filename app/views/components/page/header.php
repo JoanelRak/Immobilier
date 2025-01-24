@@ -2,19 +2,6 @@
 
 
 <header class="main-header">
-    <div class="header-top">
-        <div class="container">
-            <div class="contact-info">
-                <span><i class="fas fa-phone"></i> +33 1 23 45 67 89</span>
-                <span><i class="fas fa-envelope"></i> contact@immobooking.fr</span>
-            </div>
-            <div class="social-links">
-                <a href="#"><i class="fab fa-facebook"></i></a>
-                <a href="#"><i class="fab fa-twitter"></i></a>
-                <a href="#"><i class="fab fa-instagram"></i></a>
-            </div>
-        </div>
-    </div>
     <nav class="main-nav">
         <div class="container">
             <div class="logo">
@@ -24,7 +11,7 @@
                 </a>
             </div>
             <div class="search-bar">
-                <form action="index.php" method="GET">
+                <form action="home" method="GET">
                     <div class="search-input">
                         <i class="fas fa-search"></i>
                         <label>
