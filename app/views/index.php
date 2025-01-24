@@ -2,7 +2,7 @@
 
 include "components/functions/incs.php";
 $base_url = Flight::get("flight.base_url");
-use app\components\ErrorHandler;
+
 ?>
 
 <!DOCTYPE html>

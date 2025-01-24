@@ -18,7 +18,7 @@
     <nav class="main-nav">
         <div class="container">
             <div class="logo">
-                <a href="index.php">
+                <a href="">
                     <i class="fas fa-home"></i>
                     <span>ImmoBooking</span>
                 </a>
@@ -39,13 +39,13 @@
                     <i class="fas fa-home"></i> Accueil
                 </a>
                 <?php if(isset($_SESSION['user'])): ?>
-                    <a href="reservations.php" class="<?php echo $currentPage === 'reservations' ? 'active' : ''; ?>">
+                    <a href="reservations" class="<?php echo $currentPage === 'reservations' ? 'active' : ''; ?>">
                         <i class="fas fa-calendar-alt"></i> Mes Réservations
                     </a>
                     <div class="user-menu">
                         <button class="user-menu-btn">
                             <i class="fas fa-user-circle"></i>
-                            <?php echo htmlspecialchars($_SESSION['user_name']); ?>
+                            <?php echo htmlspecialchars($_SESSION['user']['name']); ?>
                         </button>
                         <div class="dropdown-menu">
                             <a href="profile"><i class="fas fa-user"></i> Mon Profil</a>

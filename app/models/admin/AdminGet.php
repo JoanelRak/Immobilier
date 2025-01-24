@@ -69,13 +69,26 @@ class AdminGet
 
     public function getHabitationById (int $id) {
         try {
-            $query = "SELECT * FROM Immobilier_habitation WHERE id = :id";
+            $query = "SELECT h.*, t.designation AS type_name
+                    FROM Immobilier_habitation h
+                    JOIN Immobilier_type t ON h.id_type = t.id 
+                    WHERE h.id = :id";
             $params = [':id' => $id];
-            return $this->DBH->fetchQueryWithParams($query, $params) ?: false;
+            return $this->DBH->fetchQueryWithParams($query, $params)[0] ?: false;
         }catch (\Exception $e) {
             throw new \RuntimeException("Error fetching : " . $e->getMessage(). $query);
         }
     }
+
+    public function getAllImgOfHabitation (int $id) {
+        try {
+            $query = "SELECT * FROM Immobilier_img WHERE id_habitation = :id_habitation";
+            $params = [':id_habitation' => $id];
+            return $this->DBH->fetchQueryWithParams($query, $params) ?: false;
+        }catch (\Exception $e) {
+            throw new \RuntimeException("Error fetching : " . $e->getMessage(). $query);
+        }
+    } 
     
     public function getAllReservations ($idUser) {
         try {

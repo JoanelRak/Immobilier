@@ -7,6 +7,7 @@ use app\models\admin\AdminInsert;
 use app\models\admin\SpecificQuery;
 use app\models\Connection;
 use app\components\ErrorHandler;
+use DateTime;
 use Flight;
 use flight\Engine;
 
@@ -104,8 +105,8 @@ class RoutesController
     public function submitLogin()
     {
         try {
-            $name = trim($_POST["name"] ?? '');
-            $password = trim($_POST["password"] ?? '');
+            $name = trim($_POST["nom"] ?? '');
+            $password = trim($_POST["mdp"] ?? '');
 
             if (empty($name) || empty($password)) {
                 $this->handleErrorAndRedirect("Please enter both username and password", 'login');
@@ -122,7 +123,8 @@ class RoutesController
                 'id_user' => $userGet[0]["id"],
                 'name' => $userGet[0]["nom"],
                 'password' => $userGet[0]["mdp"],
-                'age' => $userGet[0]["age"],
+                'email' => $userGet[0]["email"],
+                'numTel' => $userGet[0]["numTel"],
             ];
 
             $this->redirectTo('');
@@ -139,11 +141,12 @@ class RoutesController
     public function submitSignIn()
     {
         try {
-            $name = trim($_POST['name'] ?? '');
-            $password = trim($_POST['password'] ?? '');
-            $age = filter_input(INPUT_POST, 'age', FILTER_VALIDATE_INT);
+            $name = trim($_POST['nom'] ?? '');
+            $email = trim($_POST['email'] ?? '');
+            $password = trim($_POST['mdp'] ?? '');
+            $numTel = $_POST['numTel'] ?? '';
 
-            if (empty($name) || empty($password) || !$age) {
+            if (empty($name) || empty($password) || empty($email) || empty($numTel)) {
                 $this->handleErrorAndRedirect("All fields are required", 'signIn');
                 return;
             }
@@ -151,7 +154,8 @@ class RoutesController
             $user = [
                 ':nom' => $name,
                 ':mdp' => $password,
-                ':age' => $age
+                ':email' => $email,
+                ':numTel' => $numTel
             ];
 
             $result = $this->adminInsert->insertUser($user);
@@ -170,7 +174,8 @@ class RoutesController
                 'id_user' => $userGet[0]["id"],
                 'name' => $userGet[0]["nom"],
                 'password' => $userGet[0]["mdp"],
-                'age' => $userGet[0]["age"],
+                'email' => $userGet[0]["email"],
+                'numTel' => $userGet[0]["numTel"],
             ];
 
             $this->redirectTo('');
@@ -194,18 +199,85 @@ class RoutesController
     public function property($idProperty)
     {
         $property = $this->adminGet->getHabitationById($idProperty);
+        $property["img_url"] = $this->adminGet->getAllImgOfHabitation($idProperty);
         $this->renderView('propriete', [
-            'habitation' => $property
+            'habitation' => $property,
+            "currentPage" => ""
         ]);
     }
 
     public function reservations()
     {
         $this->checkIfLoggedIn();
-        $reservations = $this->adminGet->getAllReservations();
+        $idUser = $_SESSION["user"]["id_user"];
+        $reservations = $this->adminGet->getAllReservations($idUser);
         $this->renderView('reservations', [
             'currentPage' => 'reservations',
             'reservations' => $reservations
         ]);
     }
+
+    public function bookProperty($idProperty) {
+        try {
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+                $dateArrivee = $_POST['date_arrivee'];
+                $dateDepart = $_POST['date_depart'];
+                $idClient = $_SESSION['user']['id_user'];
+                $idHabitation = $idProperty;
+
+                if (empty($dateArrivee) || empty($dateDepart)) {
+                    $this->handleErrorAndRedirect("Les dates d'arrivée et de départ sont requises.", "property/$idProperty");
+                    return;
+                }
+
+                $dateArriveeObj = DateTime::createFromFormat('Y-m-d\TH:i', $dateArrivee);
+                $dateDepartObj = DateTime::createFromFormat('Y-m-d\TH:i', $dateDepart);
+
+                if (!$dateArriveeObj || !$dateDepartObj) {
+                    $this->handleErrorAndRedirect("Format de date invalide.", "property/$idProperty");
+                    return;
+                }
+
+                if ($dateArriveeObj >= $dateDepartObj) {
+                    $this->handleErrorAndRedirect("La date d'arrivée doit être antérieure à la date de départ.", "property/$idProperty");
+                    return;
+                }
+
+                $params = [
+                ':id_client' => $idClient,
+                ':id_habitation' => $idHabitation,
+                ':date_arrivee' => $dateArrivee,
+                ':date_depart' => $dateDepart
+                ];
+
+                $result = $this->adminInsert->insertReservation($params);
+                if ($result === -1) {
+                    $this->handleErrorAndRedirect("Failed to book", "property/$idProperty");
+                    return;
+                }
+
+                $property = $this->adminGet->getHabitationById($idProperty);
+                $property["img_url"] = $this->adminGet->getAllImgOfHabitation($idProperty);
+                $this->renderView('propriete', [
+                    'habitation' => $property,
+                    "currentPage" => "",
+                    "success" => "Propriete a ete reserve"
+                ]);
+            } else {
+                $this->handleErrorAndRedirect("Méthode non autorisée.", "property/$idProperty");
+                return;
+            }
+        } catch (\Exception $e) {
+            $this->handleErrorAndRedirect("Failed to book: " . $e->getMessage(), "property/$idProperty");
+        }
+    }
+
+    public function profile() {
+        $this->checkIfLoggedIn();
+        $this->renderView('profile', [
+            'currentPage' => 'profile'
+        ]);
+    }
+
 }

@@ -31,11 +31,11 @@
             <?php
             if (isset($_SESSION["error_message"])) { ?>
                 <div class="alert-error">
-                    <p><?php echo ErrorHandler::getError()?></p>
+                    <p><?= \app\components\ErrorHandler::getError() ?></p>
                 </div>
-            <?php }
-
-            ?>
+            <?php 
+                \app\components\ErrorHandler::reset();
+            } ?>
         </div>
     </div>
 </main>

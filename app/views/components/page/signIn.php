@@ -1,4 +1,5 @@
 <?php
+use app\components\ErrorHandler;
 ?>
 <main>
     <div class="auth-container">
@@ -39,15 +40,12 @@
             <?php
                 if (isset($_SESSION["error_message"])) { ?>
                     <div class="alert-error">
-                        <p><?php echo ErrorHandler::getError()?></p>
+                        <p><?= ErrorHandler::getError()?></p>
                     </div>
-                <?php }
-
+                <?php 
+                ErrorHandler::reset();
+                }
             ?>
-
-
-
-
         </div>
     </div>
 </main>

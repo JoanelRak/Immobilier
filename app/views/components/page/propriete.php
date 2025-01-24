@@ -1,4 +1,7 @@
 <?php
+
+use app\components\ErrorHandler;
+
 ?>
 
 <div class="property-detail-container">
@@ -26,7 +29,7 @@
     <!-- Property Gallery -->
     <div class="property-gallery container">
         <div class="main-image">
-            <img src="<?php echo htmlspecialchars($habitation['img_url']); ?>"
+            <img src="<?php echo htmlspecialchars($habitation['img_url'][0]["img_url"]); ?>"
                  alt="<?php echo htmlspecialchars($habitation['designation']); ?>">
         </div>
     </div>
@@ -60,20 +63,23 @@
             <!-- Booking Section -->
             <div class="property-section booking-section">
                 <h2>Réserver ce bien</h2>
-                <?php if(isset($_SESSION['user_id'])): ?>
+                <?php if(isset($_SESSION['user'])): ?>
                     <?php if(isset($success)): ?>
                         <div class="alert alert-success">
                             <i class="fas fa-check-circle"></i>
                             <?php echo $success; ?>
                         </div>
                     <?php endif; ?>
-                    <?php if(isset($error)): ?>
+                    <?php if(isset($_SESSION["error_message"])): ?>
                         <div class="alert alert-error">
                             <i class="fas fa-exclamation-circle"></i>
-                            <?php echo $error; ?>
+                            <?= ErrorHandler::getError() ?>
                         </div>
-                    <?php endif; ?>
-                    <form method="POST" class="booking-form">
+                    <?php
+                        ErrorHandler::reset();
+                        endif; 
+                    ?>
+                    <form method="POST" class="booking-form" action="book-property/<?= $habitation["id"] ?>">
                         <div class="dates-group">
                             <div class="form-group">
                                 <label for="date_arrivee">
@@ -111,7 +117,7 @@
                             <i class="fas fa-info-circle"></i>
                             Veuillez vous connecter pour effectuer une réservation
                         </p>
-                        <a href="login.php" class="btn-login">
+                        <a href="login" class="btn-login">
                             <i class="fas fa-sign-in-alt"></i>
                             Se connecter
                         </a>
