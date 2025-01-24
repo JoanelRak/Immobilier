@@ -302,13 +302,13 @@ class RoutesController
             $result = $this->adminInsert->insertHabitation($params);
 
             if ($result === -1) {
-                $this->handleErrorAndRedirect("Failed to add habitation", '/admin/habitations');
+                $this->handleErrorAndRedirect("Failed to add habitation", '/admin');
                 return;
             }
 
             $this->redirectTo('/admin');
         } catch (\Exception $e) {
-            $this->handleErrorAndRedirect("Error adding habitation: " . $e->getMessage(), '/admin/habitations');
+            $this->handleErrorAndRedirect("Error adding habitation: " . $e->getMessage(), '/admin');
         }
     }
 
@@ -328,13 +328,13 @@ class RoutesController
             $result = $this->adminInsert->updateHabitation($params);
 
             if ($result === -1) {
-                $this->handleErrorAndRedirect("Failed to update habitation", '/admin/habitations');
+                $this->handleErrorAndRedirect("Failed to update habitation", '/admin');
                 return;
             }
 
             $this->redirectTo('/admin');
         } catch (\Exception $e) {
-            $this->handleErrorAndRedirect("Error updating habitation: " . $e->getMessage(), '/admin/habitations');
+            $this->handleErrorAndRedirect("Error updating habitation: " . $e->getMessage(), '/admin');
         }
     }
 

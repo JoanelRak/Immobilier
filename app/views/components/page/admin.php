@@ -19,7 +19,9 @@
                 <form method="POST" class="admin-form"
                       action="<?php
                       if (!empty($editing)) {
-                          echo $editing ? 'admin/habitations/update' : 'admin/habitations/add';
+                          echo  'admin/habitations/update';
+                      } else {
+                          echo  'admin/habitations/add';
                       }
                       ?>">
                     <?php if (!empty($editing)): ?>
