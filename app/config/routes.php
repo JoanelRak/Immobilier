@@ -34,5 +34,6 @@ $router->get("/profile", [RoutesController::class, "profile"]);
 
 $router->get("/admin", [RoutesController::class, 'adminHabitations']);
 $router->post("/admin/habitations/add", [RoutesController::class, 'addHabitation']);
+$router->get("/upload-images", [RoutesController::class, 'upload']);
 $router->post("/admin/habitations/update", [RoutesController::class, 'updateHabitation']);
 $router->post("/admin/habitations/delete", [RoutesController::class, 'deleteHabitation']);

@@ -312,6 +312,12 @@ class RoutesController
         }
     }
 
+    public function upload () {
+        $this->renderView('imgupload', [
+            'currentPage' => ''
+        ]);
+    }
+
     public function updateHabitation()
     {
 
