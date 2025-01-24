@@ -13,5 +13,14 @@ class SpecificQuery
         $this->DBH = $DBH;
     }
 
+    public function getAllTypes()
+    {
+        try {
+            return $this->DBH->fetchQuery("SELECT * FROM Immobilier_type");
+        } catch (\Exception $e) {
+            throw new \RuntimeException("Error fetching types: " . $e->getMessage());
+        }
+    }
+
 
 }

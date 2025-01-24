@@ -44,24 +44,6 @@ main {
     color: #ff4d6d;
 }
 
-.hero-search input {
-    width: 100%;
-    padding: 1rem 1rem 1rem 40px;
-    border: 2px solid #ff4d6d;
-    border-radius: 4px 0 0 4px;
-    font-size: 1rem;
-}
-
-.hero-search button {
-    background-color: #ff4d6d;
-    color: white;
-    border: none;
-    padding: 1rem 2rem;
-    font-weight: bold;
-    border-radius: 0 4px 4px 0;
-    transition: background-color 0.3s ease;
-}
-
 .hero-search button:hover {
     background-color: #ff6b8a;
 }

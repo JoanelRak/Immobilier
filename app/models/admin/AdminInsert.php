@@ -40,6 +40,30 @@ class AdminInsert
         }
     }
 
+    public function updateHabitation ($params) {
+        try {
+            $sql = "UPDATE Immobilier_habitation SET 
+                id_type = :id_type,
+                nombre_chambre = :nombre_chambre,
+                loyer = :loyer,
+                quartier = :quartier,
+                designation = :designation
+                WHERE id = :id";
+            return $this->DBH->fetchQueryWithParams($sql, $params);
+        } catch (\Exception $e) {
+            throw new \RuntimeException("Error inserting habitation: " . $e->getMessage());
+        }
+    }
+
+    public function deleteHabitation ($params) {
+        try {
+            $sql = "DELETE FROM Immobilier_habitation WHERE id = :id";
+            return $this->DBH->fetchQueryWithParams($sql, $params);
+        } catch (\Exception $e) {
+            throw new \RuntimeException("Error inserting habitation: " . $e->getMessage());
+        }
+    }
+
     public function insertReservation($params)
     {
         try {

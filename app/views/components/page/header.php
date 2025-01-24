@@ -15,10 +15,10 @@
                     <div class="search-input">
                         <i class="fas fa-search"></i>
                         <label>
-                            <input type="text" name="search" placeholder="Rechercher par ville, type de bien...">
+                            <input type="text" name="search" class="input-search" placeholder="Rechercher par ville, type de bien...">
                         </label>
                     </div>
-                    <button type="submit">Rechercher</button>
+                    <button type="submit" class="btn-search">Rechercher</button>
                 </form>
             </div>
             <div class="nav-links">

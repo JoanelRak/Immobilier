@@ -25,7 +25,7 @@ $base_url = Flight::get("flight.base_url");
 
 <body>
 <?php
-if (!empty($header)) {
+if (!empty($header) && $currentPage != "admin") {
     include('components/page/header.php');
 } ?>
 

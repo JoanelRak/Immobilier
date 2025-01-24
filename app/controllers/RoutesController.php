@@ -75,14 +75,6 @@ class RoutesController
         $this->renderView('error');
     }
 
-    public function admin()
-    {
-        $data = [
-            'currentPage' => 'admin'
-        ];
-        $this->renderView('admin', $data);
-    }
-
     public function index()
     {
         $habitations = isset($_GET["search"])
@@ -276,6 +268,95 @@ class RoutesController
         $this->renderView('profile', [
             'currentPage' => 'profile'
         ]);
+    }
+    public function adminHabitations()
+    {
+        $types = $this->specificQuery->getAllTypes();
+        $habitations = $this->adminGet->getAllHabitations();
+
+        $editing = false;
+        if (isset($_GET['edit'])) {
+            $editing = $this->adminGet->getHabitationById((int)$_GET['edit']);
+        }
+
+        $this->renderView('admin', [
+            'currentPage' => 'admin',
+            'types' => $types, // Add a default empty array
+            'habitations' => $habitations,
+            'editing' => $editing // This is already set to false if not found
+        ]);
+    }
+
+    public function addHabitation()
+    {
+
+        try {
+            $params = [
+                ':id_type' => $_POST['id_type'],
+                ':nombre_chambre' => $_POST['nombre_chambre'],
+                ':loyer' => $_POST['loyer'],
+                ':quartier' => $_POST['quartier'],
+                ':designation' => $_POST['designation']
+            ];
+
+            $result = $this->adminInsert->insertHabitation($params);
+
+            if ($result === -1) {
+                $this->handleErrorAndRedirect("Failed to add habitation", '/admin/habitations');
+                return;
+            }
+
+            $this->redirectTo('/admin');
+        } catch (\Exception $e) {
+            $this->handleErrorAndRedirect("Error adding habitation: " . $e->getMessage(), '/admin/habitations');
+        }
+    }
+
+    public function updateHabitation()
+    {
+
+        try {
+            $params = [
+                ':id' => $_POST['id'],
+                ':id_type' => $_POST['id_type'],
+                ':nombre_chambre' => $_POST['nombre_chambre'],
+                ':loyer' => $_POST['loyer'],
+                ':quartier' => $_POST['quartier'],
+                ':designation' => $_POST['designation']
+            ];
+
+            $result = $this->adminInsert->updateHabitation($params);
+
+            if ($result === -1) {
+                $this->handleErrorAndRedirect("Failed to update habitation", '/admin/habitations');
+                return;
+            }
+
+            $this->redirectTo('/admin');
+        } catch (\Exception $e) {
+            $this->handleErrorAndRedirect("Error updating habitation: " . $e->getMessage(), '/admin/habitations');
+        }
+    }
+
+    public function deleteHabitation()
+    {
+
+        try {
+            $params = [
+                ':id' => $_POST['id']
+            ];
+
+            $result = $this->adminInsert->deleteHabitation($params);
+
+            if ($result === -1) {
+                $this->handleErrorAndRedirect("Failed to delete habitation", '/admin/habitations');
+                return;
+            }
+
+            $this->redirectTo('/admin');
+        } catch (\Exception $e) {
+            $this->handleErrorAndRedirect("Error deleting habitation: " . $e->getMessage(), '/admin/habitations');
+        }
     }
 
 }

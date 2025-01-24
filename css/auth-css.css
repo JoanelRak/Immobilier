@@ -139,20 +139,12 @@
 }
 
 .btn-delete {
+    padding: 0.5rem;
     background-color: #ff4d6d;
     color: white;
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 4px;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    transition: background-color 0.3s ease;
-    cursor: pointer;
-}
+    border-radius: 10px;
+    border: 1px white;
 
-.btn-delete:hover {
-    background-color: #ff6b8a;
 }
 
 /* Responsive Adjustments */

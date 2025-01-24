@@ -7,11 +7,11 @@
                 <div class="search-group">
                     <i class="fas fa-search"></i>
                     <label>
-                        <input type="text" name="search" placeholder="Où voulez-vous habiter ?"
+                        <input type="text" name="search" class="input-search" placeholder="Où voulez-vous habiter ?"
                                value="<?php echo htmlspecialchars($search ?? ''); ?> " required>
                     </label>
                 </div>
-                <button type="submit">Rechercher</button>
+                <button type="submit" class="btn-search">Rechercher</button>
             </form>
         </div>
     </div>

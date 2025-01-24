@@ -18,7 +18,6 @@ if (session_status() == PHP_SESSION_NONE) {
 $router->get('/', [RoutesController::class, 'index']);
 
 $router->get('/home',  [RoutesController::class, 'index'] );
-$router->get("/admin", [RoutesController::class, 'admin']);
 $router->get("/login", [RoutesController::class, 'login']);
 $router->post("/submit-login", [RoutesController::class, 'submitLogin']);
 $router->get("/logOut", [RoutesController::class, 'logOut']);
@@ -32,3 +31,8 @@ $router->post("/book-property/@idProperty", [RoutesController::class, 'bookPrope
 
 $router->get("/reservations", [RoutesController::class, "reservations"]);
 $router->get("/profile", [RoutesController::class, "profile"]);
+
+$router->get("/admin", [RoutesController::class, 'adminHabitations']);
+$router->post("/admin/habitations/add", [RoutesController::class, 'addHabitation']);
+$router->post("/admin/habitations/update", [RoutesController::class, 'updateHabitation']);
+$router->post("/admin/habitations/delete", [RoutesController::class, 'deleteHabitation']);
